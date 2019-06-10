@@ -12,9 +12,12 @@ public class Ship extends Coords {
     private int damage;
     private float fuel;
     private int sector;
+    private byte flyCost = 10;
+    private Boolean DockStatus;
 
     private Coords<Integer, Integer> coords;
-    private Coords<Integer, Integer> destination;
+    private int pathLenght;
+    //private Coords<Integer, Integer> destination;
 
 
     public Ship(String name) {
@@ -22,8 +25,9 @@ public class Ship extends Coords {
         damage = 0;
         fuel = 0;
         sector = 0;
-        coords.setCoordY(0);
-        coords.setCoordX(0);
+//        coords.setCoordY(new Integer(0));
+//        coords.setCoordX(new Integer(0));
+        DockStatus = true;
     }
 
     public String getName() {
@@ -58,7 +62,25 @@ public class Ship extends Coords {
         return coords;
     }
 
-    public Status flyTo(Coords destination) {
+    public void setXY(Integer x, Integer y) {
+        coords.setCoordX(new Integer(x));
+        coords.setCoordY(new Integer(y));
+
+        //fill to setcoord fields extented from Coord generic class
+        setCoordX(x);
+        setCoordY(y);
+    }
+
+
+    public void setCoords(Coords<Integer, Integer> coords) {
+        this.coords = coords;
+
+        //fill to setcoord fields extented from Coord generic class
+        setCoordX(coords.getCoordX());
+        setCoordY(coords.getCoordY());
+    }
+
+    public Status checkFlyPossibly(Coords<Integer, Integer> destination) {
 
         //TODO  check destination lenght and fuel capacity
         //check difference with coordinates
@@ -72,34 +94,58 @@ public class Ship extends Coords {
         if ((destination.getCoordX() == coords.getCoordX() &&
                 (destination.getCoordY() != coords.getCoordY()))) {
             Integer wayLenght = (Integer) destination.getCoordY() - coords.getCoordY();
-            if (this.fuel >= (Math.abs(wayLenght) * 10)) {
+            if (this.fuel >= (Math.abs(wayLenght) * flyCost)) {
+                pathLenght = wayLenght;
                 return Status.READY_TO_FLY;
-            } else return Status.NO_FUEL;
+            } else {
+                System.out.println("Замало пальногоn");
+                return Status.NO_FUEL;
+            }
         }
 
         if ((destination.getCoordY() == coords.getCoordY() &&
                 (destination.getCoordX() != coords.getCoordX()))) {
             Integer wayLenght = (Integer) destination.getCoordX() - coords.getCoordX();
-            if (this.fuel >= (Math.abs(wayLenght) * 10)) {
+            if (this.fuel >= (Math.abs(wayLenght) * flyCost)) {
+                pathLenght = wayLenght;
                 return Status.READY_TO_FLY;
-            } else return Status.NO_FUEL;
+            } else {
+                System.out.println("Замало пальногоn");
+                return Status.NO_FUEL;
+            }
         }
 
-        //check way hypotenuse
+        //calculate hypotenuse
         //use only absolute values
         if ((destination.getCoordY() != coords.getCoordY() &&
                 (destination.getCoordX() != coords.getCoordX()))) {
-            double katet1, katet2;
+            Integer katet1, katet2, argX, argY;
             Integer wayLenght;
-            katet1 = (double) destination.getCoordX() - coords.getCoordX();
-            katet2 = (double) destination.getCoordY() - coords.getCoordY();
+
+            //  arg
+            katet1 = destination.getCoordX() - coords.getCoordX();
+            katet2 = destination.getCoordY() - coords.getCoordY();
             wayLenght = (int) Math.sqrt(Math.abs(katet1 * katet1) + Math.abs(katet2 * katet2));
-            if (this.fuel >= (Math.abs(wayLenght) * 10)) {
+            if (this.fuel >= (Math.abs(wayLenght) * flyCost)) {
+                pathLenght = wayLenght;
                 return Status.READY_TO_FLY;
-            } else return Status.NO_FUEL;
+            } else {
+                System.out.println("Замало пальногоn");
+                return Status.NO_FUEL;
+            }
         }
-
-
         return Status.UNKNOW;
+    }
+
+    public boolean getDockStatus() {
+        return DockStatus;
+    }
+
+    public void fly(Coords destination) {
+        if (checkFlyPossibly(destination) == Status.READY_TO_FLY)
+            this.fuel = fuel - (pathLenght * flyCost);
+        this.coords = destination;
+        setCoordX(this.coords.getCoordX());
+        setCoordY(this.coords.getCoordY());
     }
 }

@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) {
-        Menu gameMenu = new Menu();
-        gameMenu.showHead();
-        gameMenu.showFabule();
-
+        Game g = new Game();
+        g.showHead();
+        //g.showFabule();
+        g.start();
     }
 
     public static void pause(int timeout) {

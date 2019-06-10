@@ -13,7 +13,7 @@ public class Menu {
         System.out.println("▒          Колоніальний будівник           ▒\n"+
                            "▒                                          ▒\n" +
                            "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\n");
-        Main.pause(2000);
+        Main.pause(100);
     }
 
     public void showFabule() {
